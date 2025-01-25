@@ -1,19 +1,28 @@
 #pragma once
 #include <vector>
-#include "ECS.h"
+#include <utility>
+#include <iostream>
+namespace ECS {
+	typedef uint32_t EntityID;
+}
 
 namespace DataStructure {
-	constexpr size_t INVALID_INDEX = static_cast<size_t>(-1);
-
+	constexpr uint32_t INVALID_INDEX = static_cast<uint32_t>(-1);
+	
+	class ISparseSet {
+	public:
+		virtual ~ISparseSet() = default;
+	};
 	template<typename T>
-	class SparseSet
+	class SparseSet: public ISparseSet
 	{
 	public:
+		~SparseSet() {};
 		SparseSet(uint32_t MAX_ENTITIES);
 		template<typename... Args>
-		bool add(ECS::EntityID entityID, Args... args);
-		bool remove(ECS::EntityID entityID);
-		T* get(ECS::EntityID entityID);
+		bool Add(ECS::EntityID entityID, Args&&... args);
+		bool Remove(ECS::EntityID entityID);
+		T* Get(ECS::EntityID entityID);
 	private:
 		std::vector<uint32_t> _sparse;
 		std::vector<T> _dense;
@@ -21,29 +30,29 @@ namespace DataStructure {
 	};
 	template<typename T>
 	SparseSet<T>::SparseSet(uint32_t MAX_ENTITIES): 
-		_sparse(MAX_ENTITIES, INVALID_INDEX),
-		_dense(1000),
-		_denseToSparse(1000)
+		_sparse(MAX_ENTITIES, INVALID_INDEX)
 	{
+		_dense.reserve(1000);
+		_denseToSparse.reserve(1000);
 	}
 	template<typename T>
-	T* SparseSet<T>::get(ECS::EntityID entityID)
+	T* SparseSet<T>::Get(ECS::EntityID entityID)
 	{
-		return &_dense(_sparse[entityID]) ? _sparse[entityID] != INVALID_INDEX : nullptr;
+		return (_sparse[entityID] != INVALID_INDEX)  ? &_dense[_sparse[entityID]] : nullptr;
 	}
 
 	template<typename T>
-	template<typename ...Args>
-	bool SparseSet<T>::add(ECS::EntityID entityID, Args ...args)
+	template<typename... Args>
+	bool SparseSet<T>::Add(ECS::EntityID entityID, Args&&... args)
 	{
 		if (entityID >= _sparse.size()) return false;
 		_sparse[entityID] = _dense.size();
 		_denseToSparse.push_back(entityID);
-		_dense.emplace_back(std::forward<Args>(args));
+		_dense.emplace_back(std::forward<Args>(args)...);
 		return true;
 	}
 	template<typename T>
-	bool SparseSet<T>::remove(ECS::EntityID entityID)
+	bool SparseSet<T>::Remove(ECS::EntityID entityID)
 	{
 		if (entityID >= _sparse.size() || _sparse[entityID] == INVALID_INDEX) return false;
 	
@@ -62,6 +71,7 @@ namespace DataStructure {
 		
 	}
 
+	
 	
 
 }
