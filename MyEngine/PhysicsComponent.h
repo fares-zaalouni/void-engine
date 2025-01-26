@@ -1,5 +1,6 @@
 #pragma once
 #include "PositionComponent.h"
+#include "Component.h"
 
 
 struct PhysicsComponent {

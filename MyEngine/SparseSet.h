@@ -12,33 +12,41 @@ namespace DataStructure {
 	class ISparseSet {
 	public:
 		virtual ~ISparseSet() = default;
+		virtual bool Remove(ECS::EntityID entityID) = 0;
 	};
 	template<typename T>
 	class SparseSet: public ISparseSet
 	{
 	public:
 		~SparseSet() {};
-		SparseSet(uint32_t MAX_ENTITIES);
+		SparseSet(uint32_t MAX_ENTITIES, uint32_t MAX_COMPONENTS);
 		template<typename... Args>
 		bool Add(ECS::EntityID entityID, Args&&... args);
-		bool Remove(ECS::EntityID entityID);
+		bool Remove(ECS::EntityID entityID) override;
 		T* Get(ECS::EntityID entityID);
+		bool Has(ECS::EntityID entityID);
 	private:
 		std::vector<uint32_t> _sparse;
 		std::vector<T> _dense;
 		std::vector<ECS::EntityID> _denseToSparse;
 	};
 	template<typename T>
-	SparseSet<T>::SparseSet(uint32_t MAX_ENTITIES): 
+	SparseSet<T>::SparseSet(uint32_t MAX_ENTITIES, uint32_t MAX_COMPONENTS): 
 		_sparse(MAX_ENTITIES, INVALID_INDEX)
 	{
-		_dense.reserve(1000);
-		_denseToSparse.reserve(1000);
+		_dense.reserve(MAX_COMPONENTS);
+		_denseToSparse.reserve(MAX_COMPONENTS);
 	}
 	template<typename T>
 	T* SparseSet<T>::Get(ECS::EntityID entityID)
 	{
 		return (_sparse[entityID] != INVALID_INDEX)  ? &_dense[_sparse[entityID]] : nullptr;
+	}
+
+	template<typename T>
+	bool SparseSet<T>::Has(ECS::EntityID entityID) 
+	{
+		return _sparse[entityID] != INVALID_INDEX;
 	}
 
 	template<typename T>
