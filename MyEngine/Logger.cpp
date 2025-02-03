@@ -4,10 +4,6 @@
 #include <fstream>
 #include <format>
 
-
-
-
-
 std::string logTypeToString(Log::LogType logType) {
 	switch (logType) {
 	case Log::LogType::INFO:

@@ -3,8 +3,9 @@
 #include "PositionComponent.h"
 #include "RenderComponent.h"
 
+using namespace EntityComponentSystem;
 
-ECS::ECS::ECS(const uint32_t MAX_ENTITIES): 
+ECS::ECS(const uint32_t MAX_ENTITIES): 
 	MAX_ENTITIES(MAX_ENTITIES),
 	_entitiesBitSets(MAX_ENTITIES, MAX_ENTITIES / 2),
 	_entities(MAX_ENTITIES, false)
@@ -13,7 +14,7 @@ ECS::ECS::ECS(const uint32_t MAX_ENTITIES):
 	
 }
 
-ECS::EntityID ECS::ECS::CreateEntity()
+EntityID ECS::CreateEntity()
 {
 	EntityID entity;
 	if (!_availableEntites.empty()) {
@@ -30,7 +31,7 @@ ECS::EntityID ECS::ECS::CreateEntity()
 	return entity;
 }
 
-void ECS::ECS::DestroyEntity(const EntityID entityID)
+void ECS::DestroyEntity(const EntityID entityID)
 {
 	LOG_CONSOLE_ASSERT(entityID < _currentEntity, Log::ERROR, "DESTROY ENTITY", "Invalid entity ID");
 	LOG_CONSOLE_ASSERT(_entities[entityID], Log::ERROR, "DESTROY ENTITY", "Entity not in use");

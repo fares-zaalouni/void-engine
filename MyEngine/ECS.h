@@ -9,7 +9,7 @@
 #include <queue>
 #include <bitset>
 
-namespace ECS {
+namespace EntityComponentSystem {
 	using EntityID = uint32_t;
 	constexpr uint16_t NOT_FOUND = static_cast<uint16_t>(-1);
 	constexpr std::size_t MAX_COMPONENTS = 64;
