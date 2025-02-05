@@ -14,7 +14,7 @@ public:
     bool shouldClose(); 
 
     GLFWwindow* getGLFWwindow() { return window; }
-    void CreateVulkanSurface(VkInstance instance, VkSurfaceKHR& outSurface);
+    void CreateVulkanSurface(const VkInstance& instance, VkSurfaceKHR& outSurface);
 
 private:
     GLFWwindow* window;

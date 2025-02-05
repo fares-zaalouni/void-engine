@@ -27,10 +27,10 @@ void Window::pollEvents() {
 
 bool Window::shouldClose() {
     return glfwWindowShouldClose(window);
-}
+}  
 
 
-void Window::CreateVulkanSurface(VkInstance instance, VkSurfaceKHR& outSurface) {
+void Window::CreateVulkanSurface(const VkInstance& instance, VkSurfaceKHR& outSurface) {
     if (glfwCreateWindowSurface(instance, window, nullptr, &outSurface) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create Vulkan surface!");
     }
